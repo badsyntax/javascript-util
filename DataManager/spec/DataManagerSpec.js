@@ -6,10 +6,6 @@ describe('Data manager', function () {
     DataManager.remove(data);
   });
 
-  it('Depends on jQuery', function () {
-    expect(window.jQuery).not.toBe(undefined);
-  });
-
   it('Has \'set\', \'get\' and \'remove\' methods', function () {
     expect(typeof DataManager.get).toBe('function');
     expect(typeof DataManager.set).toBe('function');
@@ -40,6 +36,65 @@ describe('Data manager', function () {
     expect(DataManager.get(data, 'foo')).toEqual({
       bar: 'hello',
       foo: 'goodbye'
+    });
+  });
+
+  it('Mixin\'s object data, breaking object reference', function () {
+
+    var newData = {
+      hello: 'there'
+    };
+
+    DataManager.set(data, newData);
+
+    expect(DataManager.get(data)).not.toBe(newData); // this is our reference check
+    expect(DataManager.get(data)).toEqual(newData);
+  });
+
+  it('Does a deep-nested merge of object data', function() {
+
+    var newData = {
+      level1: {
+        foo: true,
+        level2: {
+          bar: false,
+          level3: {
+            cat: 'meow'
+          }
+        }
+      }
+    };
+
+    DataManager.set(data, newData);
+
+    expect(DataManager.get(data)).toEqual(newData);
+
+    DataManager.set(data, {
+      hello: 'word',
+      level1: {
+        bar: false,
+        level2: {
+          foo: false,
+          level3: {
+            cat: 'cute'
+          }
+        }
+      }
+    });
+
+    expect(DataManager.get(data)).toEqual({
+      hello: 'word',
+      level1: {
+        bar: false,
+        foo: true,
+        level2: {
+          bar: false,
+          foo: false,
+          level3: {
+            cat: 'cute'
+          }
+        }
+      }
     });
   });
 
@@ -90,3 +145,4 @@ describe('Data manager', function () {
     expect(error).toBe(false);
   });
 });
+
