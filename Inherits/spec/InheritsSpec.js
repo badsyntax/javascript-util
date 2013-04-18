@@ -7,12 +7,12 @@ describe('Inherits', function() {
   it('Extends a super class instance with a sub class', function() {
 
     var Animal = function(prop) {
-        this.prop = prop;
+      this.prop = prop;
     };
-    Animal.prototype.eat = function(){};
+    Animal.prototype.eat = function() {};
 
     var Cat = function() {
-        Animal.apply(this, arguments);
+      Animal.apply(this, arguments);
     };
 
     Cat.inherits(Animal);
@@ -32,12 +32,12 @@ describe('Inherits', function() {
   it('Mixin a class', function() {
 
     var Animal = function(prop) {
-        this.prop = prop;
+      this.prop = prop;
     };
-    Animal.prototype.eat = function(){};
+    Animal.prototype.eat = function() {};
 
     var Cat = function() {
-        Animal.apply(this, arguments);
+      Animal.apply(this, arguments);
     };
 
     Cat.inherits(Animal, {

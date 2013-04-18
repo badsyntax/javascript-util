@@ -2,13 +2,14 @@
  * A data manager that manages data stored in nested objects
  * https://github.com/badsyntax/javascript-util
  */
- (function (exports) {
+(function(exports) {
 
   function isObject(variable) {
     return typeof variable === 'object';
   }
 
   // Mixin helper used to merge objects
+
   function mixin(target, source) {
     for (var prop in source) {
       if (isObject(target[prop]) && isObject(source[prop])) {
@@ -27,7 +28,7 @@
      * Example data: { namespace: { object: { something: true }}}
      * Example key: 'namespace.object.something' will return: true
      */
-    get: function (data, key) {
+    get: function(data, key) {
       if (key === undefined) {
         return data;
       }
@@ -47,9 +48,9 @@
      * - val may be a nested object, or any other value.
      * - Nested objects are merged.
      */
-    set: function (data, key, val) {
+    set: function(data, key, val) {
 
-      if (typeof key === 'object' && val === undefined) {
+      if (isObject(key) && val === undefined) {
         return mixin(data, key);
       }
 
@@ -75,7 +76,7 @@
      * - A key may NOT contain nested keys
      * - If a key is undefined, all data is removed
      */
-    remove: function (data, key) {
+    remove: function(data, key) {
       if (key !== undefined) {
         delete data[key];
       } else {

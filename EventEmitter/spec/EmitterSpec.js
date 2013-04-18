@@ -56,7 +56,7 @@ describe('Event Emitter', function() {
   });
 
   it('Removes all handlers for a given event', function() {
-    emitter.on('myevent', function(){});
+    emitter.on('myevent', function() {});
     emitter.off('myevent');
     expect(emitter.events['myevent']).toBe(undefined);
   });

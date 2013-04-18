@@ -1,25 +1,25 @@
 /**
-* Basic event emitter object.
-* https://github.com/badsyntax/javascript-util
-*
-* It does *not* support the following:
-* - Namespaced events
-* - Emitting events a certain number of times
-*
-* Usage:
-* function MyObj() {
-*   Emitter.call(this);
-* }
-* MyObj.prototype = Object.create(Emitter.prototype);
-* var obj = new MyObj();
-* obj.on('myevent', function(data){
-*   alert(data);
-* });
-* obj.emit('myevent', 'hello');
-* obj.off('myevent');
-*
-* See tests for more usage examples.
-*/
+ * Basic event emitter object.
+ * https://github.com/badsyntax/javascript-util
+ *
+ * It does *not* support the following:
+ * - Namespaced events
+ * - Emitting events a certain number of times
+ *
+ * Usage:
+ * function MyObj() {
+ *   Emitter.call(this);
+ * }
+ * MyObj.prototype = Object.create(Emitter.prototype);
+ * var obj = new MyObj();
+ * obj.on('myevent', function(data){
+ *   alert(data);
+ * });
+ * obj.emit('myevent', 'hello');
+ * obj.off('myevent');
+ *
+ * See tests for more usage examples.
+ */
 
 (function(exports) {
 
@@ -79,4 +79,3 @@
   exports.Emitter = Emitter;
 
 }(this));
-

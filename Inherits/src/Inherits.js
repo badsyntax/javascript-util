@@ -1,7 +1,7 @@
 /**
-* ES5 prototypal inheritance helper
-* https://github.com/badsyntax/javascript-util
-*/
+ * ES5 prototypal inheritance helper
+ * https://github.com/badsyntax/javascript-util
+ */
 
 Object.defineProperty(Object.prototype, 'mixin', {
   value: function(obj) {

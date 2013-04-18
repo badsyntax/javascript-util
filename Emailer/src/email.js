@@ -5,7 +5,7 @@
  * Usage: node email.js path/to/email.html 'you@email.com,other@email.com'
  */
 
-var mailer = (function () {
+var mailer = (function() {
 
   'use strict';
 
@@ -44,8 +44,8 @@ var mailer = (function () {
       process.chdir(parts.join('/'));
     }
 
-    return html.replace(/<img[^>]*>/gi, function (imgTag) {
-      return imgTag.replace(/\b(src\s*=\s*(?:['"]?))([^'"> ]+)/i, function (src, prefix, url) {
+    return html.replace(/<img[^>]*>/gi, function(imgTag) {
+      return imgTag.replace(/\b(src\s*=\s*(?:['"]?))([^'"> ]+)/i, function(src, prefix, url) {
 
         var cid = crypto.randomBytes(20).toString('hex') + "@possible";
 
@@ -61,7 +61,7 @@ var mailer = (function () {
 
   function prepHTML(path, process) {
     // Get the HTML contents for the message
-    fs.readFile(path, 'utf8', function (err, data) {
+    fs.readFile(path, 'utf8', function(err, data) {
       if (err) {
         throw new Error(err);
       }
@@ -96,7 +96,7 @@ var mailer = (function () {
       message.to = toEmail;
     }
 
-    prepHTML(path, function () {
+    prepHTML(path, function() {
       sendMail();
     });
   }
