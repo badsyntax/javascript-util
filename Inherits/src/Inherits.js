@@ -12,7 +12,7 @@
  *
  * Basic usage:
  * var Animal = function(){};
- * var Cat = function();
+ * var Cat = function(){};
  * Cat.inherits(Animal);
  * Cat.prototype.purr = function(){};
  * var Dog = function(){};
