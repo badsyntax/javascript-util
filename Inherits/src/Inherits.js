@@ -1,6 +1,9 @@
 /**
- * ES5 prototypal inheritance helper
+ * ECMAScript 5 prototypal inheritance helper
  * https://github.com/badsyntax/javascript-util
+ *
+ * ECMAScript 5 compatibility table:
+ * http://kangax.github.io/es5-compat-table/
  */
 
 Object.defineProperty(Object.prototype, 'mixin', {
@@ -10,7 +13,6 @@ Object.defineProperty(Object.prototype, 'mixin', {
         this[prop] = obj[prop];
       }
     }
-    return this;
   }
 });
 
