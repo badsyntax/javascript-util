@@ -19,21 +19,27 @@
  * Dog.inherits(Animal, { bark: function() {} });
  */
 
-Object.defineProperty(Object.prototype, 'mixin', {
-  value: function(obj) {
-    Object.getOwnPropertyNames(obj).forEach(function(prop) {
-      Object.defineProperty(this, prop, Object.getOwnPropertyDescriptor(obj, prop))
-    }.bind(this));
-  }
-});
+(function() {
 
-Object.defineProperty(Function.prototype, 'inherits', {
-  value: function(_super, _mixin) {
-    this.prototype = Object.create(_super.prototype);
-    this.prototype.constructor = this;
-    if (_mixin instanceof Object) {
-      this.prototype.mixin(_mixin);
+  'use strict';
+
+  Object.defineProperty(Object.prototype, 'mixin', {
+    value: function(obj) {
+      Object.getOwnPropertyNames(obj).forEach(function(prop) {
+        Object.defineProperty(this, prop, Object.getOwnPropertyDescriptor(obj, prop));
+      }.bind(this));
     }
-    return this;
-  }
-});
+  });
+
+  Object.defineProperty(Function.prototype, 'inherits', {
+    value: function(_super, _mixin) {
+      this.prototype = Object.create(_super.prototype);
+      this.prototype.constructor = this;
+      if (_mixin instanceof Object) {
+        this.prototype.mixin(_mixin);
+      }
+      return this;
+    }
+  });
+
+}());
