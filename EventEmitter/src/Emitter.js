@@ -78,4 +78,4 @@
 
   exports.Emitter = Emitter;
 
-}(this));
+}(typeof exports === 'object' ? exports : window));

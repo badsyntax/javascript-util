@@ -8,8 +8,7 @@
     return typeof variable === 'object';
   }
 
-  // Mixin helper used to merge objects
-
+  // Mixin helper used to deep-merge objects
   function mixin(target, source) {
     for (var prop in source) {
       if (isObject(target[prop]) && isObject(source[prop])) {
@@ -91,4 +90,4 @@
 
   exports.DataManager = DataManager;
 
-}(this));
+}(typeof exports === 'object' ? exports : window));
