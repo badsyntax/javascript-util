@@ -18,13 +18,13 @@ module.exports = function(grunt) {
     },
     jasmine: {
       src: [
-        'Tests/PhantomJSPolyfills.js',
         '*/src/**/*.js',
         '!Emailer/src/email.js',
         '!ImageToBase64String/src/imageToBase64String.js'
       ],
       options: {
-        specs: '*/spec/**/*.js'
+        specs: '*/spec/**/*.js',
+        helpers: 'Tests/PhantomJSPolyfills.js'
       }
     }
   });
