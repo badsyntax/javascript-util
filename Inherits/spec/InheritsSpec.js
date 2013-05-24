@@ -57,23 +57,23 @@ describe('Inherits', function() {
     expect(objs._Super.prototype.foo).not.toBeDefined();
   });
 
-  // it('Mixins an object into the sub objects\' prototype', function() {
+  it('Mixins an object into the sub objects\' prototype', function() {
 
-  //   var objs = getObjects();
+    var objs = getObjects();
 
-  //   var MyObj = function() {};
+    var MyObj = function() {};
 
-  //   MyObj.inherits(objs._Sub, {
-  //     drink: function() {},
-  //     meh: true
-  //   });
+    MyObj.inherits(objs._Sub, {
+      drink: function() {},
+      meh: true
+    });
 
-  //   var obj = new MyObj('meh');
+    var obj = new MyObj('meh');
 
-  //   expect(typeof obj.drink).toBe('function');
-  //   expect(obj.meh).toBe(true);
-  //   expect(obj instanceof objs._Super).toBe(true);
-  //   expect(obj instanceof objs._Sub).toBe(true);
-  //   expect(obj instanceof MyObj).toBe(true);
-  // });
+    expect(typeof obj.drink).toBe('function');
+    expect(obj.meh).toBe(true);
+    expect(obj instanceof objs._Super).toBe(true);
+    expect(obj instanceof objs._Sub).toBe(true);
+    expect(obj instanceof MyObj).toBe(true);
+  });
 });
