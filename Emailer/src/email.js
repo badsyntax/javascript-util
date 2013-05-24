@@ -1,7 +1,7 @@
 /**
  * Simple node mailer
- * Author: Richard Willis (willis.rh@gmail.com)
- * Installation: Install dependancies via: `npm install`
+ * Copyright (c) 2013 Richard Willis; Licensed MIT
+ * Install dependancies via: `npm install`
  * Usage: node email.js path/to/email.html 'you@email.com,other@email.com'
  */
 

@@ -1,5 +1,6 @@
 /**
  * ECMAScript 5 prototypal inheritance helper
+ * Copyright (c) 2013 Richard Willis; Licensed MIT
  * https://github.com/badsyntax/javascript-util
  *
  * ECMAScript 5 compatibility table:

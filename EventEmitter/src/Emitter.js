@@ -1,5 +1,6 @@
 /**
- * Basic event emitter object.
+ * Basic event emitter object
+ * Copyright (c) 2013 Richard Willis; Licensed MIT
  * https://github.com/badsyntax/javascript-util
  *
  * It does *not* support the following:

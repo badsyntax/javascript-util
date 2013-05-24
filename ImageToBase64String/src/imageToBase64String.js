@@ -2,6 +2,7 @@
 
 /**
  * Image to Base64 encoded string script
+ * Copyright (c) 2013 Richard Willis; Licensed MIT
  * Supports: png, jpg, gif
  * Usage: `node imageToBase64String.js path/to/image.jpg`
  */
