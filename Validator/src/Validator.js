@@ -6,7 +6,7 @@
  * Usage:
  * var validator = new Validator(data);
  * validator.rule('name', 'notEmpty', 'Name must not be empty');
- * validator.rule('email', 'notEmpty', 'Email must not be empty');
+ * validator.rule('email', 'isEmail', 'Email must be a valid email');
  * var errors = validator.check();
  */
 (function(exports) {

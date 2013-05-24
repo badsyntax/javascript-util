@@ -12,7 +12,7 @@ describe('Event Emitter', function() {
 
     emitter.on('myevent', handler);
 
-    var events = emitter.events['myevent'];
+    var events = emitter.events.myevent;
 
     expect(events.length).toBe(1);
     expect(events[0]).toBe(handler);
@@ -23,7 +23,7 @@ describe('Event Emitter', function() {
     emitter.on('myevent', function() {});
     emitter.on('myevent', function() {});
 
-    var events = emitter.events['myevent'];
+    var events = emitter.events.myevent;
 
     expect(events.length).toBe(2);
     expect(events[0]).not.toBe(events[1]);
@@ -58,7 +58,7 @@ describe('Event Emitter', function() {
   it('Removes all handlers for a given event', function() {
     emitter.on('myevent', function() {});
     emitter.off('myevent');
-    expect(emitter.events['myevent']).toBe(undefined);
+    expect(emitter.events.myevent).toBe(undefined);
   });
 
   it('Removes specific handlers for a given event', function() {
@@ -70,11 +70,11 @@ describe('Event Emitter', function() {
     emitter.on('myevent', handler2);
     emitter.off('myevent', handler1);
 
-    expect(emitter.events['myevent'].length).toBe(1);
-    expect(emitter.events['myevent'][0]).toBe(handler2);
+    expect(emitter.events.myevent.length).toBe(1);
+    expect(emitter.events.myevent[0]).toBe(handler2);
 
     emitter.off('myevent', handler2);
 
-    expect(emitter.events['myevent']).toBe(undefined);
+    expect(emitter.events.myevent).toBe(undefined);
   });
 });

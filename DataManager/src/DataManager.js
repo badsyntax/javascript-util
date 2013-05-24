@@ -15,7 +15,7 @@
         mixin(target[prop], source[prop]); // resursively mixin new properties
         continue;
       }
-      target[prop] = source[prop]
+      target[prop] = source[prop];
     }
   }
 
@@ -79,9 +79,9 @@
       if (key !== undefined) {
         delete data[key];
       } else {
-        for (var key in data) {
-          if (data.hasOwnProperty(key)) {
-            delete data[key];
+        for (var prop in data) {
+          if (data.hasOwnProperty(prop)) {
+            delete data[prop];
           }
         }
       }

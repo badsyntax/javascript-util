@@ -1,3 +1,5 @@
+/*global require:false, process:false*/
+
 /**
  * Simple node mailer
  * Copyright (c) 2013 Richard Willis; Licensed MIT
