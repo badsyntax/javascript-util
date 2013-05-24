@@ -11,11 +11,11 @@
  */
 (function(exports) {
 
-  // Rule handlers
+  // Rule tests
   var Valid = (function() {
     return {
       notEmpty: function(val) {
-        return [ null, false, '', [] ].indexOf(val) === -1;
+        return [ null, false, '' ].indexOf(val) === -1;
       },
       isEmail: function(val) {
         // RFC822 - Based on code written by Ross Kendall - http://goo.gl/bNP6l
@@ -26,23 +26,29 @@
 
   // Our main validator
   function Validator(data) {
-    this.data = data;
+    this.data = data || {};
     this.rules = [];
   }
 
-  Validator.prototype.rule = function(key, func, message) {
+  Validator.prototype.rule = function(key, tester, message) {
 
-    if (typeof func === 'string') {
-      func = Valid[func];
-      if (func === undefined) {
+    if (typeof tester === 'string') {
+      tester = Valid[tester];
+      // Default tester not found
+      if (tester === undefined) {
         return;
       }
     }
 
+    // Invalid custom test
+    if (typeof tester !== 'function') {
+      return;
+    }
+
     this.rules.push({
       key: key,
-      func: func,
-      message: message
+      tester: tester,
+      message: message || 'invalid'
     });
   };
 
@@ -52,7 +58,7 @@
 
     this.rules.forEach(function(rule){
 
-      var isValid = rule.func(this.data[rule.key]);
+      var isValid = rule.tester(this.data[rule.key]);
 
       if (!isValid && errors[rule.key] === undefined) {
         errors[rule.key] = rule.message;
@@ -63,6 +69,6 @@
     return Object.keys(errors).length !== 0 ? errors : null;
   };
 
-  exports.Emitter = Emitter;
+  exports.Validator = Validator;
 
 }(typeof exports === 'object' ? exports : window));
