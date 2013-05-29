@@ -128,55 +128,56 @@ describe('Validator', function() {
 
   describe('Default tests', function() {
 
+    function runTest(test, val, not) {
+
+      var validator = new Validator({ key: val });
+      validator.rule('key', test, 'failed');
+      var errors = validator.check();
+
+      var expectation = expect(typeof (errors || {}).key);
+
+      if (not) {
+        expectation = expectation.not;
+      }
+      expectation.toBe('undefined');
+    }
+
     describe('notEmpty', function() {
 
       it('Correctly checks for empty or falsy values', function() {
-
-        function runTest(val) {
-          var validator = new Validator({
-            test: val
-          });
-          validator.rule('test', 'notEmpty', 'failed');
-          var errors = validator.check();
-          expect(typeof (errors || {}).test).not.toBe('undefined');
-        }
-
-        runTest(null);
-        runTest(false);
-        runTest('');
+        runTest('notEmpty', null, true);
+        runTest('notEmpty', false, true);
+        runTest('notEmpty', '', true);
       });
     });
 
-    describe('isemail', function() {
+    describe('isEmail', function() {
 
       it('Correctly checks for valid email strings', function() {
 
-        function runFailTest(val) {
-          var validator = new Validator({
-            test: val
-          });
-          validator.rule('test', 'isEmail', 'failed');
-          var errors = validator.check();
-          expect(typeof (errors || {}).test).not.toBe('undefined');
-        }
+        runTest('isEmail', 'test', true);
+        runTest('isEmail', 'test@', true);
+        runTest('isEmail', '', true);
+        runTest('isEmail', '@s.com', true);
 
-        function runSuccessTest(val) {
-          var validator = new Validator({
-            test: val
-          });
-          validator.rule('test', 'isEmail', 'failed');
-          var errors = validator.check();
-          expect(typeof (errors || {}).test).toBe('undefined');
-        }
+        runTest('isEmail', 'test@test.com');
+        runTest('isEmail', 'test@test');
+        runTest('isEmail', 'i@i.i.i.icom');
+      });
+    });
 
-        runFailTest('test');
-        runFailTest('test@');
-        runFailTest('');
-        runFailTest('@s.com');
+    describe('isDate', function() {
 
-        runSuccessTest('test@test.com');
-        runSuccessTest('test@test');
-        runSuccessTest('i@i.i.i.icom');
+      it('Correctly checks for valid ISO 8601 date strings', function() {
+        // http://www.w3.org/TR/NOTE-datetime
+        runTest('isDate', '1994-11-05T13:15:30Z');
+        runTest('isDate', '1994-11-05T08:15:30-05:00');
+        runTest('isDate', '1997-07-16T19:20:30.45+01:00');
+        runTest('isDate', '1997-07-16T19:20:30+01:00');
+        runTest('isDate', '1997-07-16T19:20+01:00');
+        runTest('isDate', '1997-07-16');
+        runTest('isDate', '1997-07');
+        runTest('isDate', '1997');
       });
     });
   });
