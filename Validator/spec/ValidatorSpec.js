@@ -70,7 +70,7 @@ describe('Validator', function() {
 
       expect(validator.rules[1]).toEqual({
         key: 'test',
-        message: 'invalid',
+        message: 'Invalid!',
         tester: test
       });
     });
@@ -123,6 +123,22 @@ describe('Validator', function() {
       var errors = validator.check();
 
       expect(errors).toBe(null);
+    });
+
+
+    it('Runs the tests, and only stores the first failed validation error message for a key', function() {
+
+      var validator = new Validator();
+      var test = function() {
+        return false;
+      };
+
+      validator.rule('test', test, 'failed1');
+      validator.rule('test', test, 'failed2');
+
+      var errors = validator.check();
+
+      expect(errors.test).toBe('failed1');
     });
   });
 
