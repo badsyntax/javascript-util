@@ -1,0 +1,11 @@
+{
+  "source": {
+    "include": ["Validator/src"],
+    "exclude": [],
+    "includePattern": ".+\\.js(doc)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "opts": {
+    "destination": "./docs/"
+  }
+}
