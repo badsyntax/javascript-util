@@ -26,15 +26,24 @@ module.exports = function(grunt) {
         specs: '*/spec/**/*.js',
         helpers: 'Tests/PhantomJSPolyfills.js'
       }
+    },
+    uglify: {
+      Validator: {
+        files: {
+          'Validator/dest/validator.min.js': ['Validator/src/Validator.js']
+        }
+      }
     }
   });
 
   // Load the tasks
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
 
   // Register custom tasks
   grunt.registerTask('lint', ['jshint']);
   grunt.registerTask('test', ['lint', 'jasmine']);
-  grunt.registerTask('default', ['test']);
+  grunt.registerTask('build', ['test', 'uglify']);
+  grunt.registerTask('default', ['build']);
 };
