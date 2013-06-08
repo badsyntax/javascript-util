@@ -1,6 +1,6 @@
 {
   "name": "javascript-util",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "https://github.com/badsyntax/javascript-util",
   "description": "A bunch of general javascript utilities",
   "repository": {
@@ -17,6 +17,10 @@
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.1.1",
     "grunt-contrib-jasmine": "~0.3.3",
-    "grunt-contrib-uglify": "~0.2.2"
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-jsdoc": "~0.3.3",
+    "grunt-contrib-clean": "~0.4.1",
+    "grunt-template-jasmine-requirejs": "~0.1.2",
+    "grunt-jasmine-node": "~0.1.0"
   }
 }

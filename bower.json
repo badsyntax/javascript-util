@@ -1,9 +1,10 @@
 {
   "name": "javascript-util",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "ignore": [
     "node_modules"
   ],
-  "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "requirejs": "~2.1.6"
+  }
 }

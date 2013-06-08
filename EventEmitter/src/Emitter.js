@@ -21,8 +21,18 @@
  *
  * See tests for more usage examples.
  */
-
-(function(exports) {
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) {
+    // Node/CommonJS
+    module.exports = factory();
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(factory);
+  } else {
+    // Browser globals
+    root.Emitter = factory();
+  }
+}(this, function factory() {
 
   function Emitter() {
     this.events = {};
@@ -77,6 +87,6 @@
     return this;
   };
 
-  exports.Emitter = Emitter;
+  return Emitter;
 
-}(typeof exports === 'object' ? exports : window));
+}));

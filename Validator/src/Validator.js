@@ -7,33 +7,33 @@
  * @example
  * var validator = new Validator(data);
  * validator.rule('name', 'notEmpty', 'Name must not be empty');
+ * validator.rule('name', 'minLength', 'Name must be 4 characters', 4);
+ * validator.rule('name', 'maxLength', 'Name must be less than 12 characters', 12);
  * validator.rule('email', 'isEmail', 'Email must be a valid email');
  * validator.rule('date', 'isDate', 'Date must be valid');
  * var errors = validator.check();
  */
 (function (root, factory) {
-  if (typeof exports === 'object') {
-    // CommonJS
-    factory(exports);
+  if (typeof module === 'object' && module.exports) {
+    // Node/CommonJS
+    module.exports = factory();
   } else if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['exports'], factory);
+    define(factory);
   } else {
     // Browser globals
-    factory(root);
+    root.Validator = factory();
   }
-}(this, function (exports) {
+}(this, function factory() {
 
   "use strict";
 
   /**
    * Rule tests
-   * @namespace
    */
   var Tests = {
       /**
        * Checks if a value is empty. Can be any falsy value, eg: '', null, false.
-       * @function
        * @returns {boolean}
        */
       notEmpty: function (val) {
@@ -41,7 +41,6 @@
       },
       /**
        * Checks if a value is a valid RFC822 email string.
-       * @function
        * Created by Ross Kendall - http://goo.gl/bNP6l
        * @returns {boolean}
        */
@@ -50,7 +49,6 @@
       },
       /**
        * Checks if a value is a valid ISO 8601 DateTime string.
-       * @function
        * Created by Dean Thrasher - http://goo.gl/G2bT2
        * @returns {boolean}
        */
@@ -63,7 +61,6 @@
    * Validator
    * @name Validator
    * @constructor
-   * @this {Validator}
    * @param {object} data - The data object to validate against,
    *  in the format of { prop: 'value' }
    */
@@ -76,10 +73,10 @@
    * Adds a new rule for a specified key to test against.
    * @name Validator#rule
    * @method
-   * @this {Validator}
-   * @param {string} key - The data key
-   * @param {string|function} tester - The tester key or function
-   * @param {string} message - The validation message
+   * @param {string} key - The data key.
+   * @param {string|function} tester - The tester key or function.
+   * @param {string} message - The validation message.
+   * @param [...] Zero or more rule options.
    */
   Validator.prototype.rule = function (key, tester, message) {
 
@@ -97,7 +94,8 @@
     this.rules.push({
       key: key,
       tester: tester,
-      message: message || 'Invalid!'
+      message: message || 'Invalid!',
+      options: Array.prototype.slice.call(arguments, 3)
     });
   };
 
@@ -105,27 +103,34 @@
    * Runs the rule tests against the data set.
    * @name Validator#check
    * @method
-   * @this {Validator}
    * @returns {null|Object}
    */
   Validator.prototype.check = function () {
 
-    var errors = null, i = 0, j = this.rules.length;
+    var errors = null;
+    var i = 0;
+    var j = this.rules.length;
 
     for(; i<j; i++) {
 
       var rule = this.rules[i];
 
-      if (rule.tester(this.data[rule.key])) {
+      // Execute the rule test
+      if (rule.tester(this.data[rule.key], rule.options)) {
         continue;
       }
 
-      errors = errors || {};
-      errors[rule.key] = errors[rule.key] || rule.message;
+      // Test failed, store the first error message for this key
+      if (!errors) {
+        errors = {};
+      }
+      if (!errors[rule.key]) {
+        errors[rule.key] = rule.message;
+      }
     }
 
     return errors;
   };
 
-  exports.Validator = Validator;
+  return Validator;
 }));

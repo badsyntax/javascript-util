@@ -17,20 +17,56 @@ module.exports = function(grunt) {
       }
     },
     jasmine: {
-      src: [
-        '*/src/**/*.js',
-        '!Emailer/src/email.js',
-        '!ImageToBase64String/src/imageToBase64String.js'
-      ],
-      options: {
-        specs: '*/spec/**/*.js',
-        helpers: 'Tests/PhantomJSPolyfills.js'
+      browserGlobal: {
+        src: [
+          '*/src/**/*.js',
+          '!Emailer/src/email.js',
+          '!ImageToBase64String/src/imageToBase64String.js'
+        ],
+        options: {
+          specs: '*/spec/**/*.js',
+          helpers: [
+            'spec/PhantomJSPolyfills.js'
+          ]
+        }
+      },
+      browserAMD: {
+        src: [
+          '*/src/**/*.js',
+          '!Emailer/src/email.js',
+          '!ImageToBase64String/src/imageToBase64String.js'
+        ],
+        options: {
+          specs: '*/spec/**/*.js',
+          helpers: [
+            'spec/PhantomJSPolyfills.js'
+          ],
+          template: require('grunt-template-jasmine-requirejs'),
+          templateOptions: {
+            requireConfig: {
+              baseUrl: ''
+            }
+          }
+        }
       }
+    },
+    jasmine_node: {
+      specNameMatcher: 'UMDSpec',
+      projectRoot: ''
     },
     uglify: {
       Validator: {
         files: {
           'Validator/dest/validator.min.js': ['Validator/src/Validator.js']
+        }
+      }
+    },
+    clean: ['docs'],
+    jsdoc : {
+      dist : {
+        src: ['Validator/src/*.js'],
+        options: {
+          destination: 'docs'
         }
       }
     }
@@ -40,10 +76,15 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-jasmine-node');
+  grunt.loadNpmTasks('grunt-jsdoc');
+
 
   // Register custom tasks
   grunt.registerTask('lint', ['jshint']);
-  grunt.registerTask('test', ['lint', 'jasmine']);
-  grunt.registerTask('build', ['test', 'uglify']);
+  grunt.registerTask('test', ['lint', 'jasmine', 'jasmine_node']);
+  grunt.registerTask('docs', ['clean', 'jsdoc']);
+  grunt.registerTask('build', ['test', 'uglify', 'docs']);
   grunt.registerTask('default', ['build']);
 };
