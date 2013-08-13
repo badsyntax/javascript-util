@@ -23,30 +23,42 @@
       emitter = new Emitter();
     });
 
-    it('Should store handlers for a given event', function() {
+    it('Stores a handler for a given event', function() {
 
       var handler = function() {};
 
       emitter.on('myevent', handler);
 
-      var events = emitter.events.myevent;
+      var events = emitter._events.myevent;
 
       expect(events.length).toBe(1);
       expect(events[0]).toBe(handler);
     });
 
-    it('Should store multiple handlers for the same event', function() {
+    it('Stores multiple handlers for the same event', function() {
 
       emitter.on('myevent', function() {});
       emitter.on('myevent', function() {});
 
-      var events = emitter.events.myevent;
+      var events = emitter._events.myevent;
 
       expect(events.length).toBe(2);
       expect(events[0]).not.toBe(events[1]);
     });
 
-    it('Executes the handlers when emitting a given event', function() {
+    it('Store a handler for a namespaced event', function() {
+
+      var handler = function() {};
+
+      emitter.on('namespace.myevent', handler);
+
+      var events = emitter._events['namespace.myevent'];
+
+      expect(events.length).toBe(1);
+      expect(events[0]).toBe(handler);
+    });
+
+    it('Executes all handlers when emitting a given event', function() {
 
       var handler1 = jasmine.createSpy();
       var handler2 = jasmine.createSpy();
@@ -72,10 +84,73 @@
       expect(handler).toHaveBeenCalledWith(data);
     });
 
+    it('Executes a namespaced event', function() {
+
+      var handler1 = jasmine.createSpy();
+
+      emitter.on('namespace.myevent', handler1);
+      emitter.emit('namespace.myevent');
+
+      expect(handler1).toHaveBeenCalled();
+    });
+
+    it('Executes all handlers in an event namespace', function() {
+
+      var handler1;
+      var handler2;
+      var handler3;
+
+      function resetHandlers() {
+        handler1 = jasmine.createSpy();
+        handler2 = jasmine.createSpy();
+        handler3 = jasmine.createSpy();
+      }
+
+      resetHandlers();
+      emitter.on('namespace.myevent', handler1);
+      emitter.on('namespace.myevent', handler2);
+      emitter.on('namespace.myevent.action', handler3);
+      emitter.emit('namespace');
+
+      expect(handler1).toHaveBeenCalled();
+      expect(handler2).toHaveBeenCalled();
+      expect(handler3).toHaveBeenCalled();
+
+      resetHandlers();
+      emitter.on('namespace2.myevent', handler1);
+      emitter.on('namespace2.myevent', handler2);
+      emitter.on('namespace2.myevent.action', handler3);
+      emitter.emit('namespace2.myevent');
+
+      expect(handler1).toHaveBeenCalled();
+      expect(handler2).toHaveBeenCalled();
+      expect(handler3).toHaveBeenCalled();
+
+      resetHandlers();
+      emitter.on('namespace3.myevent', handler1);
+      emitter.on('namespace3.myevent', handler2);
+      emitter.on('namespace3.myevent.action', handler3);
+      emitter.emit('namespace3.myevent.action');
+
+      expect(handler1).not.toHaveBeenCalled();
+      expect(handler2).not.toHaveBeenCalled();
+      expect(handler3).toHaveBeenCalled();
+
+      resetHandlers();
+      emitter.on('namespace4.myevent', handler1);
+      emitter.on('namespace4.myevent', handler2);
+      emitter.on('namespace4.myevent.action', handler3);
+      emitter.emit('myevent.action');
+
+      expect(handler1).not.toHaveBeenCalled();
+      expect(handler2).not.toHaveBeenCalled();
+      expect(handler3).not.toHaveBeenCalled();
+    });
+
     it('Removes all handlers for a given event', function() {
       emitter.on('myevent', function() {});
       emitter.off('myevent');
-      expect(emitter.events.myevent).toBe(undefined);
+      expect(emitter._events.myevent).toEqual([]);
     });
 
     it('Removes specific handlers for a given event', function() {
@@ -87,12 +162,12 @@
       emitter.on('myevent', handler2);
       emitter.off('myevent', handler1);
 
-      expect(emitter.events.myevent.length).toBe(1);
-      expect(emitter.events.myevent[0]).toBe(handler2);
+      expect(emitter._events.myevent.length).toBe(1);
+      expect(emitter._events.myevent[0]).toBe(handler2);
 
       emitter.off('myevent', handler2);
 
-      expect(emitter.events.myevent).toBe(undefined);
+      expect(emitter._events.myevent).toEqual([]);
     });
   });
 }));
