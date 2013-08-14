@@ -17,18 +17,13 @@
 }(this, function factory() {
 
   /**
-   * Event Emitter constructor.
-   * It does *not* support the following:
-   *   - Emitting events a certain number of times
+   * Event Emitter constructor
    * @name Emitter
+   * @depends Function.prototype.bind
    * @constructor
    * @property {object} _events - The collection of events which contain the handlers.
    * @example
-   * function UIComponent() {
-   *   EventEmitter.call(this); // Execute the super constructor
-   * }
-   * UIComponent.inherits(EventEmitter);
-   * var component = new UIComponent();
+   * var component = new EventEmitter();
    * component.on('someEvent', someHandler);
    * component.emit('someEvent');
    */
@@ -49,16 +44,32 @@
   };
 
   /**
+   * Adds a new handler for a given event. The handler is only executed once.
+   * @name Emitter#one
+   * @method
+   * @public
+   * @param {string}    type    - The event type.
+   * @param {function}  handler - The callback handler for the event type.
+   */
+  Emitter.prototype.one = function(type, handler) {
+    this.on(type, function(data) {
+      this._callHandler(data, handler);
+      this.off(type, handler, true);
+    }.bind(this));
+  };
+
+  /**
    * Remove a specific handler, or all handlers for a given event.
    * @name Emitter#off
    * @method
    * @public
    * @param {string}    type    - The event type.
    * @param {function}  handler - The callback handler to remove for the given
+   * @param {function}  exact   - Do an exact event match (no namespace).
    * event (optional)
    */
-  Emitter.prototype.off = function(type, handler) {
-    this._eachEvent(type, function(event, handlers) {
+  Emitter.prototype.off = function(type, handler, exact) {
+    this._eachEvent(type, exact, function(event, handlers) {
       this._removeHandlers(handlers, handler);
     }.bind(this));
   };
@@ -68,12 +79,13 @@
    * @name Emitter#emit
    * @method
    * @public
-   * @param {string}  type - The event type.
-   * @param {mixed}   data - Event data to be passed to all the event handlers.
+   * @param {string}  type  - The event type.
+   * @param {mixed}   data  - Event data to be passed to all the event handlers.
+   * @param {string}  exact - Do an exact event match (no namespace).
    */
-  Emitter.prototype.emit = function(type, data) {
-    this._eachEvent(type, function(event, handlers) {
-      this._execHandlers(handlers, data);
+  Emitter.prototype.emit = function(type, data, exact) {
+    this._eachEvent(type, exact, function(event, handlers) {
+      this._callHandlers(handlers, data);
     }.bind(this));
   };
 
@@ -110,17 +122,26 @@
 
   /**
    * Executes all handlers in a given set of handlers.
-   * @name Emitter#_execHandlers
+   * @name Emitter#_callHandlers
    * @method
    * @private
    * @param {array}   handlers  - The array of handlers.
    * @param {mixed}   data      - The event data.
    */
-  Emitter.prototype._execHandlers = function(handlers, data) {
-    var handler;
-    while ((handler = handlers.shift())) {
-      handler.call(this, data);
-    }
+  Emitter.prototype._callHandlers = function(handlers, data) {
+    handlers.forEach(this._callHandler.bind(this, data));
+  };
+
+  /**
+   * Executes a specified handler.
+   * @name Emitter#_callHandler
+   * @method
+   * @private
+   * @param {array}   handlers  - The array of handlers.
+   * @param {mixed}   data      - The event data.
+   */
+  Emitter.prototype._callHandler = function(data, handler) {
+    handler.call(this, data);
   };
 
   /**
@@ -129,12 +150,13 @@
    * @method
    * @private
    * @param {string}    type      - The event type.
+   * @param {string}    exact     - Do an exact event match (no namespace).
    * @param {function}  callback  - The callback function to execute for every
    * matched event.
    */
-  Emitter.prototype._eachEvent = function(type, callback) {
+  Emitter.prototype._eachEvent = function(type, exact, callback) {
     for (var event in this._events) {
-      if (this._matchesEvent(event, type)) {
+      if (this._matchesEvent(event, type, exact)) {
         callback(event, this._events[event]);
       }
     }
@@ -145,11 +167,16 @@
    * @name Emitter#_matchesEvent
    * @method
    * @private
-   * @param   {string}    event    - The event.
-   * @param   {string}    type     - The event type.
-   * @returns {boolean}
+   * @param   {string}    event     - The event.
+   * @param   {string}    type      - The event type.
+   * @returns {boolean}   exact     - Do an exact event match (no namespace).
    */
-  Emitter.prototype._matchesEvent = function(event, type) {
+  Emitter.prototype._matchesEvent = function(event, type, exact) {
+
+    // Bypass the namespace check.
+    if (exact) {
+      return event === type;
+    }
 
     // Escape special characters.
     type = type.replace(/([.])/g, "\\$1");
