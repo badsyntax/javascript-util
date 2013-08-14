@@ -64,7 +64,7 @@ module.exports = function(grunt) {
     clean: ['docs'],
     jsdoc : {
       dist : {
-        src: ['Validator/src/*.js'],
+        src: ['Validator/src/*.js', 'EventEmitter/src/*.js'],
         options: {
           destination: 'docs'
         }
