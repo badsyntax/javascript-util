@@ -147,6 +147,34 @@
       expect(handler3).not.toHaveBeenCalled();
     });
 
+    it('Executes all handlers in an event namespace that contains some special characters', function() {
+
+      var handler1 = jasmine.createSpy();
+      var handler2 = jasmine.createSpy();
+
+      emitter.on('namespace.my-event', handler1);
+      emitter.on('namespace.my[event', handler2);
+      emitter.emit('namespace');
+
+      expect(handler1).toHaveBeenCalled();
+      expect(handler2).toHaveBeenCalled();
+    });
+
+    it('Does not execute a handler in an event namespace if the namespace does not match', function() {
+
+      var handler1 = jasmine.createSpy();
+      var handler2 = jasmine.createSpy();
+
+      emitter.on('namespace.myevent', handler1);
+      emitter.on('namespace.myevent', handler2);
+      emitter.emit('myevent');
+      emitter.emit('namespac');
+      emitter.emit('name');
+
+      expect(handler1).not.toHaveBeenCalled();
+      expect(handler2).not.toHaveBeenCalled();
+    });
+
     it('Removes all handlers for a given event', function() {
       emitter.on('myevent', function() {});
       emitter.off('myevent');

@@ -19,7 +19,6 @@
   /**
    * Event Emitter constructor.
    * It does *not* support the following:
-   *   - Namespaced events
    *   - Emitting events a certain number of times
    * @name Emitter
    * @constructor
@@ -122,7 +121,7 @@
   };
 
   /**
-   * Tests if a given event type matches the given event.
+   * Tests if a given event type matches the given event. Type could be a namespace.
    * @name Emitter#_matchesEvent
    * @method
    * @private
@@ -132,19 +131,11 @@
    */
   Emitter.prototype._matchesEvent = function(event, type) {
 
-    var eventNS = event.split('.');
-    var typeNS = type.split('.');
-    var match = true;
+    // Escape special characters.
+    type = type.replace(/([.])/g, "\\$1");
 
-    // Moving from left to right on the, test the namespace segments match.
-    for(var i = 0; i < typeNS.length; i++) {
-      if (typeNS[i] !== eventNS[i]) {
-        match = false;
-        break;
-      }
-    }
-
-    return match;
+    // Test if the namespace matches.
+    return new RegExp('^' + type + '(\\.|$)').test(event);
   };
 
   return Emitter;
