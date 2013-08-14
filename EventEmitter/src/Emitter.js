@@ -59,11 +59,7 @@
    */
   Emitter.prototype.off = function(type, handler) {
     this._eachEvent(type, function(event, handlers) {
-      // Remove the handler/s from the event array.
-      handlers.splice(
-        (handler ? handlers.indexOf(handler) : 0),
-        (handler ? 1 : handlers.length)
-      );
+      this._removeHandlers(handlers, handler);
     }.bind(this));
   };
 
@@ -77,10 +73,7 @@
    */
   Emitter.prototype.emit = function(type, data) {
     this._eachEvent(type, function(event, handlers) {
-      var handler;
-      while ((handler = handlers.shift())) {
-        handler.call(this, data);
-      }
+      this._execHandlers(handlers, data);
     }.bind(this));
   };
 
@@ -93,14 +86,41 @@
    * @param {mixed}   handler   - The callback handler for the event type.
    */
   Emitter.prototype._addHandler = function(type, handler) {
-
     var events = this._events;
-
     if (!events[type]) {
       events[type] = [];
     }
-
     events[type].push(handler);
+  };
+
+  /**
+   * Removes all handlers, or one handler, from a set of handlers.
+   * @name Emitter#_removeHandler
+   * @method
+   * @private
+   * @param {array}               handlers  - The array of handlers.
+   * @param {function|optional}   handler   - The handler function to remove.
+   */
+  Emitter.prototype._removeHandlers = function(handlers, handler) {
+    handlers.splice(
+      (handler ? handlers.indexOf(handler) : 0),
+      (handler ? 1 : handlers.length)
+    );
+  };
+
+  /**
+   * Executes all handlers in a given set of handlers.
+   * @name Emitter#_execHandlers
+   * @method
+   * @private
+   * @param {array}   handlers  - The array of handlers.
+   * @param {mixed}   data      - The event data.
+   */
+  Emitter.prototype._execHandlers = function(handlers, data) {
+    var handler;
+    while ((handler = handlers.shift())) {
+      handler.call(this, data);
+    }
   };
 
   /**
