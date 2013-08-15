@@ -90,6 +90,16 @@
   };
 
   /**
+   * Returns all events.
+   * @name Emitter#events
+   * @method
+   * @public
+   */
+  Emitter.prototype.events = function() {
+    return this._events;
+  };
+
+  /**
    * Adds a specific handler to an event set.
    * @name Emitter#_addHandler
    * @method

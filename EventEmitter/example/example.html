@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<head>
+    <title>Event Emitter example</title>
+    <script src="../src/Emitter.js"></script>
+</head>
+<body>
+	<div>
+		<button id="add-event">
+			Add an event
+		</button>
+		<button id="emit-event">
+			Emit event
+		</button>
+		<button id="remove-event">
+			Remove an event
+		</button>
+	</div>
+	<div style="margin: 1em 0;">
+		<div>Events:</div>
+		<div id="events" style="padding: 1em; border: 1px solid #ccc;">
+		</div>
+	</div>
+	<script>
+	(function(emitter) {
+
+		function onClick(id, handler) {
+			document.getElementById(id).addEventListener('click', handler, false);
+		}
+
+		function updateEvents() {
+
+			var events = emitter.events();
+			var str = '';
+
+			for(var event in events) {
+				str += '<div>' + event + ' : ' + events[event].join(', ') + '</div>';
+			}
+			if (!str) {
+				str = 'None';
+			}
+
+			document.getElementById('events').innerHTML = str;
+
+			console.log(events);
+		}
+
+		updateEvents();
+
+		onClick('add-event', function() {
+			var event = prompt('Enter event name:');
+			emitter.on(event, function() {
+				alert('Event ' + event + ' fired.')
+			});
+			updateEvents();
+		});
+
+		onClick('emit-event', function() {
+			var event = prompt('Enter event name:');
+			emitter.emit(event);
+			updateEvents();
+		});
+
+		onClick('remove-event', function() {
+			var event = prompt('Enter event name:');
+			emitter.off(event);
+			updateEvents();
+		});
+	}(new Emitter()));
+	</script>
+</body>
+</html>
