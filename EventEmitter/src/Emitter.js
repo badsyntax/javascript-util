@@ -53,7 +53,7 @@
    */
   Emitter.prototype.one = function(type, handler) {
     this.on(type, function(data) {
-      this._callHandler(data, handler);
+      this._callHandler(handler, data);
       this.off(type, handler, true);
     }.bind(this));
   };
@@ -129,7 +129,9 @@
    * @param {mixed}   data      - The event data.
    */
   Emitter.prototype._callHandlers = function(handlers, data) {
-    handlers.forEach(this._callHandler.bind(this, data));
+    handlers.forEach(function(handler) {
+      this._callHandler(handler, data);
+    }.bind(this));
   };
 
   /**
@@ -140,7 +142,7 @@
    * @param {array}   handlers  - The array of handlers.
    * @param {mixed}   data      - The event data.
    */
-  Emitter.prototype._callHandler = function(data, handler) {
+  Emitter.prototype._callHandler = function(handler, data) {
     handler.call(this, data);
   };
 
