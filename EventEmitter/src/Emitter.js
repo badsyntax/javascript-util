@@ -38,9 +38,10 @@
    * @public
    * @param {string}    type    - The event type.
    * @param {function}  handler - The callback handler for the event type.
+   * @param {mixed}     context - Call the handler in a particular context.
    */
-  Emitter.prototype.on = function(type, handler) {
-    this._addHandler(type, handler);
+  Emitter.prototype.on = function(type, handler, context) {
+    this._addHandlers.apply(this, arguments);
   };
 
   /**
@@ -50,12 +51,12 @@
    * @public
    * @param {string}    type    - The event type.
    * @param {function}  handler - The callback handler for the event type.
+   * @param {mixed}     context - Call the handler in a particular context.
    */
-  Emitter.prototype.one = function(type, handler) {
-    this.on(type, function(data) {
-      this._callHandler(data, handler);
-      this.off(type, handler, true);
-    }.bind(this));
+  Emitter.prototype.one = function(type, handler, context) {
+    this.on(type, [ handler, function off() {
+      this.off(type, [ handler, off ], true);
+    }.bind(this)], context);
   };
 
   /**
@@ -97,12 +98,16 @@
    * @param {string}  type      - The event type.
    * @param {mixed}   handler   - The callback handler for the event type.
    */
-  Emitter.prototype._addHandler = function(type, handler) {
+  Emitter.prototype._addHandlers = function(type, handler, context) {
+
     var events = this._events;
     if (!events[type]) {
       events[type] = [];
     }
-    events[type].push(handler);
+
+    this._eachHandler(handler, function(h) {
+      events[type].push(context ? h.bind(context) : h);
+    });
   };
 
   /**
@@ -114,10 +119,12 @@
    * @param {function|optional}   handler   - The handler function to remove.
    */
   Emitter.prototype._removeHandlers = function(handlers, handler) {
-    handlers.splice(
-      (handler ? handlers.indexOf(handler) : 0),
-      (handler ? 1 : handlers.length)
-    );
+    this._eachHandler(handler, function(h) {
+      handlers.splice(
+        (h ? handlers.indexOf(h) : 0),
+        (h ? 1 : handlers.length)
+      );
+    });
   };
 
   /**
@@ -129,7 +136,7 @@
    * @param {mixed}   data      - The event data.
    */
   Emitter.prototype._callHandlers = function(handlers, data) {
-    handlers.forEach(this._callHandler.bind(this, data));
+    this._eachHandler(handlers, this._callHandler.bind(this, data));
   };
 
   /**
@@ -160,6 +167,19 @@
         callback(event, this._events[event]);
       }
     }
+  };
+
+  /**
+   * Iterates through the handlers.
+   * @name Emitter#_eachHandler
+   * @method
+   * @private
+   * @param {function|array}  handler   - The handler, or array of handlers.
+   * @param {function}        callback  - The callback function to execute for each handler.
+   * matched event.
+   */
+  Emitter.prototype._eachHandler = function(handler, callback) {
+    ( handler instanceof Array ? handler : [ handler ] ).forEach(callback);
   };
 
   /**

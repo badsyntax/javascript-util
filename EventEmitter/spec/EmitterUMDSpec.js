@@ -216,6 +216,26 @@
         expect(handler1).not.toHaveBeenCalled();
         expect(handler2).not.toHaveBeenCalled();
       });
+
+      it('Executes handlers in the correct context.', function() {
+
+        var obj = {
+          handler: function() {
+            expect(this).toBe(obj);
+          }
+        };
+
+        var obj2 = {
+          handler: function() {
+            expect(this).toBe(emitter);
+          }
+        };
+
+        emitter.on('test', obj.handler, obj);
+        emitter.one('test.foo', obj.handler, obj);
+        emitter.on('test.bar', obj2.handler);
+        emitter.emit('test');
+      });
     });
 
     describe('Removing handlers', function() {
