@@ -91,6 +91,16 @@
   };
 
   /**
+   * Returns all events.
+   * @name Emitter#events
+   * @method
+   * @public
+   */
+  Emitter.prototype.events = function() {
+    return this._events;
+  };
+
+  /**
    * Adds a specific handler to an event set.
    * @name Emitter#_addHandler
    * @method
@@ -136,7 +146,9 @@
    * @param {mixed}   data      - The event data.
    */
   Emitter.prototype._callHandlers = function(handlers, data) {
-    this._eachHandler(handlers, this._callHandler.bind(this, data));
+    handlers.forEach(function(handler) {
+      this._callHandler(handler, data);
+    }.bind(this));
   };
 
   /**
@@ -147,7 +159,7 @@
    * @param {array}   handlers  - The array of handlers.
    * @param {mixed}   data      - The event data.
    */
-  Emitter.prototype._callHandler = function(data, handler) {
+  Emitter.prototype._callHandler = function(handler, data) {
     handler.call(this, data);
   };
 
