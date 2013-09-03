@@ -27,7 +27,10 @@
    * component.on('someEvent', someHandler);
    * component.emit('someEvent');
    */
-  function Emitter() {
+  function Emitter(target) {
+    if (target) {
+      return mixin(target, new Emitter());
+    }
     this._events = {};
   }
   var EmitterPrototype = Emitter.prototype;
@@ -90,6 +93,23 @@
       callHandlers(handlers, data, this);
     }.bind(this));
   };
+
+  /**
+   * Mixin object properties into a different object.
+   * @name Emitter#mixin
+   * @method
+   * @public
+   * @param {object}  target  - The target object.
+   * @param {object}  source  - The source object.
+   */
+  function mixin(target, source) {
+    for(var key in source) {
+      if (source.hasOwnProperty(key) || EmitterPrototype.hasOwnProperty(key)) {
+        target[key] = source[key];
+      }
+    }
+    return target;
+  }
 
   /**
    * Adds a specific handler to an event set.

@@ -23,6 +23,22 @@
       emitter = new Emitter();
     });
 
+    it('Mixins the emitter onto an object instance', function() {
+
+      var obj = {
+        prop: function() {
+
+        }
+      };
+
+      Emitter(obj);
+
+      expect(typeof obj.on).toBe('function');
+      expect(typeof obj.one).toBe('function');
+      expect(typeof obj.off).toBe('function');
+      expect(typeof obj.emit).toBe('function');
+    });
+
     describe('Adding event handlers', function() {
 
       it('Stores a handler for a given event', function() {
