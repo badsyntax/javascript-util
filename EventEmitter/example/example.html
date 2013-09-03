@@ -29,7 +29,7 @@
 
 		function updateEvents() {
 
-			var events = emitter.events();
+			var events = emitter._events;
 			var str = '';
 
 			for(var event in events) {
